@@ -1,5 +1,5 @@
 Name:           vice
-Version:        3.2
+Version:        3.4
 Release:        5%{?dist}
 Summary:        Emulator for a variety of Commodore 8bit machines
 Group:          Applications/Emulators
@@ -21,10 +21,8 @@ Source12:       xcbm-ii.metainfo.xml
 Source13:       xpet.metainfo.xml
 Source14:       xplus4.metainfo.xml
 Source15:       xvic.metainfo.xml
-Patch1:         vice-2.4.24-datadir.patch
-Patch2:         vice-htmlview.patch
-Patch3:         vice-norpath.patch
-Patch4:         vice-new-ffmpeg.patch
+Patch1:         0001-data-and-doc-paths.patch
+Patch2:         0002-don-t-ignore-cflags-during-tests.patch
 BuildRequires:  gtk3-devel
 BuildRequires:  SDL2-devel
 BuildRequires:  libXext-devel
@@ -142,9 +140,7 @@ sed -i 's/\r//' `find -name "*.h"`
 sed -i 's/\r//' `find -name "*.c"`
 sed -i 's/\r//' `find -name "*.cc"`
 %patch1 -p1 -z .datadir
-%patch2 -p1 -z .htmlview
-%patch3 -p1 -z .norpath
-%patch4 -p1 -z .ffmpeg
+%patch2 -p1 -z .configure
 for i in man/*.1 doc/*.info* README AUTHORS; do
    iconv -f ISO-8859-1 -t UTF8 $i > $i.tmp
    touch -r $i $i.tmp
@@ -157,16 +153,20 @@ cp -a %{name}-%{version}.gtk %{name}-%{version}.sdl
 
 
 %build
-COMMON_FLAGS="--enable-ethernet --enable-parsid --without-oss --disable-arch --enable-external-ffmpeg"
+COMMON_FLAGS="--enable-ethernet --enable-parsid --without-oss --disable-arch --enable-external-ffmpeg --disable-hwscale --enable-x64"
 
 # workaround needed to fix incorrect toolchain check in configure script
 export toolchain_check=no
 export CC=gcc
 export CXX=g++
 
+# prevent errors when building docs
+export MAKEINFO=true
+
 # Some of the code uses GNU / XOPEN libc extensions
 export CFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE=1"
 export CXXFLAGS="$RPM_OPT_FLAGS -D_GNU_SOURCE=1"
+export LDFLAGS="$RPM_LD_FLAGS -fPIE"
 
 pushd %{name}-%{version}.gtk
   %configure --enable-native-gtk3ui $COMMON_FLAGS
@@ -314,6 +314,9 @@ gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
 
 
 %changelog
+* Wed Jan 29 2020 Lars Kellogg-Stedman <lars@oddbit.com> - 3.4-5
+- Update vice to 3.4
+
 * Sat Aug 10 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 3.2-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 

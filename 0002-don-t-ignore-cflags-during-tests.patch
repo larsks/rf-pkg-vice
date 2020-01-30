@@ -1,0 +1,24 @@
+From a34315090d264245246e34732acd6db3aef5a8c7 Mon Sep 17 00:00:00 2001
+From: Lars Kellogg-Stedman <lars@oddbit.com>
+Date: Thu, 30 Jan 2020 06:50:45 -0500
+Subject: [PATCH 2/2] don't ignore cflags during tests
+
+---
+ configure | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/configure b/configure
+index ab74034..958bfbb 100755
+--- a/configure
++++ b/configure
+@@ -9800,7 +9800,6 @@ fi
+ 
+ 
+ old_CFLAGS="$CFLAGS"
+-CFLAGS="$VICE_CFLAGS"
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for time_t in time.h" >&5
+ $as_echo_n "checking for time_t in time.h... " >&6; }
+ if ${bu_cv_decl_time_t_time_h+:} false; then :
+-- 
+2.24.1
+

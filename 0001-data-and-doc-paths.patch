@@ -1,0 +1,62 @@
+From 73dcc94dffb472ac2f070e410d9fd1d1d6b9748d Mon Sep 17 00:00:00 2001
+From: Lars Kellogg-Stedman <lars@oddbit.com>
+Date: Wed, 29 Jan 2020 12:20:57 -0500
+Subject: [PATCH 1/2] data and doc paths
+
+---
+ configure                        | 4 ++--
+ src/arch/headless/archdep_unix.h | 2 +-
+ src/arch/shared/archdep_unix.h   | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/configure b/configure
+index 2a884c5..ab74034 100755
+--- a/configure
++++ b/configure
+@@ -21228,7 +21228,7 @@ fi
+     ;;
+   linux*)
+     if test x"$host_cpu" = "xx86_64"; then
+-      VICEDIR="$PREFIX/lib64/vice"
++      VICEDIR="$PREFIX/share/vice"
+        if false; then
+   ALTERNATE_DOCDIR_TRUE=
+   ALTERNATE_DOCDIR_FALSE='#'
+@@ -21238,7 +21238,7 @@ else
+ fi
+ 
+     else
+-      VICEDIR="$PREFIX/lib/vice"
++      VICEDIR="$PREFIX/share/vice"
+        if false; then
+   ALTERNATE_DOCDIR_TRUE=
+   ALTERNATE_DOCDIR_FALSE='#'
+diff --git a/src/arch/headless/archdep_unix.h b/src/arch/headless/archdep_unix.h
+index e29b838..a9fe0e2 100644
+--- a/src/arch/headless/archdep_unix.h
++++ b/src/arch/headless/archdep_unix.h
+@@ -106,7 +106,7 @@ const char *archdep_home_path(void);
+ 
+ #define LIBDIR VICEDIR
+ 
+-#if defined(__FreeBSD__) || defined(__NetBSD__)
++# if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+ #define DOCDIR PREFIX "/share/doc/vice"
+ #else
+ #define DOCDIR LIBDIR "/doc"
+diff --git a/src/arch/shared/archdep_unix.h b/src/arch/shared/archdep_unix.h
+index 4e67688..a2b8db5 100644
+--- a/src/arch/shared/archdep_unix.h
++++ b/src/arch/shared/archdep_unix.h
+@@ -107,7 +107,7 @@
+ 
+ /* This is incorrect */
+ #if 0
+-# if defined(__FreeBSD__) || defined(__NetBSD__)
++# if defined(__FreeBSD__) || defined(__NetBSD__) || defined(__linux__)
+ #  define DOCDIR PREFIX "/share/doc/vice"
+ # else
+ #  define DOCDIR LIBDIR "/doc"
+-- 
+2.24.1
+
